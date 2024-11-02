@@ -1,0 +1,330 @@
+# include <stdio.h>
+# include <stdlib.h>
+
+typedef struct Stack{
+    int size;
+    int *arr;
+    int MAX;
+} stack;
+
+int popstack(stack* stack){
+    if (stack->size==0)
+    {   
+        printf("-1\n");
+        return -1;
+    }
+    stack->size--;
+    printf("%d\n", stack->arr[stack->size]);
+    return 0;
+}
+
+int pushstack(stack* stack, int b){
+    
+    if (stack->size==stack->MAX)
+    {
+        printf("-1\n");
+        return -1;
+    }
+    
+    stack->arr[stack->size++]=b;
+    return 0;
+}
+
+void printstack(stack* stack){
+    for (int i = 0; i < stack->size; i++)
+    {
+        printf("%d ", (stack->arr)[i]);
+    }
+    printf("\n");
+}
+
+
+typedef struct Queue
+{
+    int MAX;
+    int head;
+    int tail;
+    int * arr;
+} queue;
+
+int enqueue(queue* queue, int b){
+    
+    if ((queue->tail+1)%queue->MAX == queue->head)
+    {   
+        printf("-1\n");
+        return -1;
+    }
+    
+    queue->arr[queue->tail++] = b;
+    queue->tail = queue->tail % queue->MAX;
+    return 0;
+}
+
+int dequeue(queue* queue){
+    
+    if (queue->head == queue->tail)
+    {
+        printf("-1\n");
+        return -1;
+    }
+    
+    printf("%d\n", queue->arr[queue->head++]);
+    queue->head = queue->head % queue->MAX;
+    return 0;
+}
+
+void printqueue(queue* queue){
+    
+    for (int i = queue->head; i != queue->tail ; i=(i+1)%queue->MAX)
+    {
+        printf("%d ", queue->arr[i]);
+    }
+    printf("\n");
+    
+}
+
+void heapify(int* heap, int n, int i){
+    
+    if (2*i+2 < n && heap[2*i+2]<heap[2*i+1] && heap[2*i+2]<heap[i])
+    {
+        int tmp = heap[i];
+        heap[i] = heap[2*i+2];
+        heap[2*i+2] = tmp;
+        
+        heapify(heap, n, 2*i+2);
+        
+    }
+    
+    
+    else if ( 2*i+1 < n &&  heap[2*i+1] < heap[i])
+    {
+        int tmp = heap[i];
+        heap[i] = heap[2*i+1];
+        heap[2*i+1] = tmp;
+        
+        heapify(heap, n, 2*i+1);
+    }
+    
+}
+
+void buildheap(int* heap, int n){
+    
+    for (int i = n/2 - 1; i >= 0; i--)
+    {
+        heapify(heap, n, i);
+    }
+    
+}
+
+void printheap(int *heap, int n){
+    for (int i = 0; i < n; i++)
+    {
+        printf("%d ", heap[i]);
+    }
+    printf("\n");
+}
+
+int extractmin(int *heap, int *n){
+    if (*n==0)
+    {
+        printf("-1\n");
+        return -1;
+    }
+    
+    printf("%d\n", heap[0]);
+    
+    //remove and heapify
+    
+    heap[0]=heap[*n-1];
+    (*n)--;
+    heapify(heap, *n, 0);
+    
+    return 0;
+}
+
+void swap(int* a, int *b){
+    int temp = *a;
+    *a=*b;
+    *b = temp;
+}
+
+void decrementkey(int* heap, int n, int a2, int a3){
+    
+    heap[a2]=a3;
+    // printf("heapifiying %d \n", (a2-1)/2);
+    // heapify(heap, n, (a2-1)/2);
+    
+    int parent = (a2 - 1) / 2;
+    while (a2 > 0 && heap[a2] < heap[parent]) {
+        swap(&heap[a2], &heap[parent]);
+        a2 = parent;
+        parent = (a2 - 1) / 2;
+    }
+}
+
+
+
+int main(){
+    
+    int o, MAX;
+    scanf("%d %d", &o, &MAX);
+    int a, b;
+    
+    if (o==0)
+    {   
+        stack stack;
+        stack.size=0;
+        stack.MAX=MAX;
+        stack.arr = (int *)malloc(stack.MAX * sizeof(int));
+        
+        while(1){
+            
+            scanf("%d", &a);
+            if (a==0)
+            {
+                printstack(&stack);
+            }
+
+            if (a==1)
+            {   
+                scanf("%d", &b);
+                if (pushstack(&stack, b) == -1)
+                {
+                    return 0;
+                }
+            }
+            
+            else if (a==2){
+                if (popstack(&stack) == -1)
+                {
+                    return 0;
+                }
+            }
+            
+            else if(a==3){
+                return 0;
+            }
+            
+        }
+    }
+    
+    if (o==1)
+    {
+        queue queue;
+        queue.MAX = MAX;
+        queue.head=0;
+        queue.tail=0;
+        queue.arr = (int *)malloc(queue.MAX*sizeof(int));
+
+        while(1){
+            
+            scanf("%d", &a);
+            if (a==0)
+            {
+                printqueue(&queue);
+            }
+
+            if (a==1)
+            {   
+                scanf("%d", &b);
+                if (enqueue(&queue, b) == -1)
+                {
+                    return 0;
+                }
+            }
+            
+            else if (a==2){
+                if (dequeue(&queue) == -1)
+                {
+                    return 0;
+                }
+            }
+            
+            else if(a==3){
+                return 0;
+            }
+            
+        }
+
+    }
+    
+    if (o==2)
+    {   
+        int heap[MAX];
+        int n = 0;
+        
+        while (1)
+        {
+            scanf("%d", &a);
+            
+            if (a==0)
+            {
+                printheap(heap, n);
+            }
+            
+            if (a==1)
+            {
+                scanf("%d", &n);
+                
+                if (n>MAX)
+                {
+                    printf("-1\n");
+                    return 0;
+                }
+                
+                
+                for (int i = 0; i < n; i++)
+                {
+                    scanf("%d", &heap[i]);
+                }
+                
+                buildheap(heap, n);
+                
+                
+            }
+            
+            if (a==2)
+            {   
+                
+                int a2, a3;
+                scanf("%d %d", &a2, &a3);
+                a2--;
+                
+                if (a2>=n)
+                {
+                    continue;
+                }
+                if (heap[a2]<=a3)
+                {
+                    continue;
+                }
+                else
+                {
+                    decrementkey(heap, n, a2, a3);
+                }
+            }
+            
+            if (a==3)
+            {
+                if(extractmin(heap, &n) == -1){
+                    return 0;
+                }
+            }
+            
+            
+            if (a==4)
+            {
+                return 0;
+            }
+            
+            
+        }
+        
+        
+        
+    }
+    
+    
+    
+    return 0;
+}

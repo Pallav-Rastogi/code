@@ -1,0 +1,74 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int modularinv(int x, int y){
+    // returns x^-1 mod y
+    int iteration = 0;
+    int n = y;
+    int q2, q1, q0, p2=0, p1=1, p0, r=1;
+    
+    while (r!=0)
+    {
+        q0 = y/x;
+        r = y%x;
+        
+        y=x;
+        x=r;
+        if (iteration==0)
+        {
+            p0=0;
+        }
+        else if (iteration==1)
+        {
+            p0=1;
+        }
+        else{
+            // printf("%d %d %d %d\n", p0, p1, p2, q2);
+            p0 = p2-p1*q2;
+            while (p0<0)
+            {
+                p0+=n;
+            }
+            p0%=n;
+            
+        // printf("eof iter %d p0=%d p1=%d p2=%d q2=%d q0=%d x=%d y=%d r=%d\n", iteration, p0,p1,p2,q2, q0, x, y, r);
+            p2=p1;
+            p1=p0;
+            // printf("%d\n", p0);
+        }
+        
+            // printf("%d\n", q0);
+
+        q2=q1;
+        q1=q0;
+        iteration++;
+
+    }
+    
+    if (y != 1) {
+        // No modular inverse exists if gcd(x, y) != 1
+        return -1;
+    }
+    
+    p0 = p2-p1*q2;
+    p0%=n;
+    
+    while (p0<0)
+    {
+        p0+=n;
+    }
+
+    return p0;
+    
+    
+}
+
+
+
+int main(){
+    
+    printf("%d", modularinv(9, 7));
+    
+    return 0;
+}
+

@@ -1,0 +1,25 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int compare_integers(const void *a, const void *b) {
+    int int_a = *(int *)a;
+    int int_b = *(int *)b;
+    return int_a - int_b;
+    // positive if a>b for ascending
+}
+
+int main() {
+    int arr[] = {42, 17, 93, 58, 24};
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    qsort(arr, n, sizeof(int), compare_integers);
+    // arary, size of array (num elemes), size of one elem, comparator
+
+    printf("Sorted array: ");
+    for (int i = 0; i < n; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+
+    return 0;
+}
